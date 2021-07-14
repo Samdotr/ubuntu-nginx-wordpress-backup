@@ -1,0 +1,13 @@
+#!/bin/bash
+
+while [[ true ]] ; do
+
+	# performs synchronizations / copy
+
+	/usr/bin/rclone -vv sync /mnt/raid1/website-backups website-backups:General
+
+	# waiting for something to change or it will pass 300 seconds
+	inotifywait --recursive --timeout 300 -e modify,delete,create,move   /mnt/raid1/website-backups
+
+	# going back to the beginning
+done

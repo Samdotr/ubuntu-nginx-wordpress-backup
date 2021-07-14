@@ -1,0 +1,8 @@
+[Unit]
+Description=Looks for files within the website backups folder and sends them to Teams via rclone
+
+[Service]
+ExecStart=/bin/rclone-website-backups
+
+[Install]
+WantedBy=multi-user.target
