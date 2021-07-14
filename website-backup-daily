@@ -1,0 +1,31 @@
+#!/bin/bash
+
+DESTINATIONPATH="/mnt/raid1/website-backups"
+MODE="daily"
+
+DB1="website1"
+DB2="website2"
+
+# website files
+tar -cvpzf $DESTINATIONPATH/$MODE/`date +\%a`/$HOSTNAME-www.tar.gz -C /var/ www
+
+# nginx configuration files
+tar -cvpzf $DESTINATIONPATH/$MODE/`date +\%a`/$HOSTNAME-nginx.tar.gz -C /etc/ nginx
+
+# php config file
+cp /etc/php/7.4/fpm/php.ini $DESTINATIONPATH/$MODE/`date +\%a`/$HOSTNAME-php.ini
+
+# paid SSL certificates
+tar -cvpzf $DESTINATIONPATH/$MODE/`date +\%a`/$HOSTNAME-certs.tar.gz -C /root/ certs
+
+# free letsencrypt SSL certificates
+tar -cvpzf $DESTINATIONPATH/$MODE/`date +\%a`/$HOSTNAME-letsencrypt.tar.gz -C /etc/ letsencrypt
+
+# mysql users
+mysqldump mysql user > $DESTINATIONPATH/$MODE/`date +\%a`/$HOSTNAME-users.sql
+
+# main website database
+mysqldump --databases $DB1 --add-drop-database > $DESTINATIONPATH/$MODE/`date +\%a`/$HOSTNAME-$DB1.sql
+
+# other website database
+mysqldump --databases $DB2 --add-drop-database > $DESTINATIONPATH/$MODE/`date +\%a`/$HOSTNAME-$DB2.sql
